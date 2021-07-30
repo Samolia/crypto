@@ -2,6 +2,7 @@ import re
 import requests
 import pandas as pd
 
+
 BINANCE_URL = 'https://api.binance.com/api/v3/exchangeInfo'
 OKEX_URL = 'https://www.okex.com/api/spot/v3/instruments'
 COLUMN_NAMES = ['unify name', 'binance name', 'okex name']
@@ -25,13 +26,15 @@ def get_okex_instruments():
 
 
 def create_df_instruments():
+    binance_instruments = get_binance_instruments()
+    okex_instruments = get_okex_instruments()
     df1 = pd.DataFrame({
-        'binance name': get_binance_instruments(),
-        'unify name': get_binance_instruments()
+        'binance name': binance_instruments,
+        'unify name': binance_instruments
     })
     df2 = pd.DataFrame({
-        'okex name': get_okex_instruments()[0],
-        'unify name': get_okex_instruments()[1]
+        'okex name': okex_instruments[0],
+        'unify name': okex_instruments[1]
     })
     df = df1.merge(df2, on='unify name', how='outer')[COLUMN_NAMES]
     df = df.sort_values('unify name', ignore_index=True)
